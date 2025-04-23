@@ -60,5 +60,22 @@ export async function getUsers(req, res) {
 }
 
 export async function deleteUser(req,res) {
-    
+    try {
+        const userRepository = appDataSource.getRepository(UserSchema);
+        const id = req.params.id;
+        const userdeleted = await userRepository.findOne({ where: [{ id: id }] });
+        if (!userdeleted) {
+            return res.status(404).json({ message: "usuario no encontrado", data: null });
+        }
+
+        await userRepository.delete({ id });
+        return res.status(200).json({ message: "usuario eliminado", data: userdeleted });
+
+
+
+        
+
+    } catch (error) {
+        console.error(error);
+    }
 }
